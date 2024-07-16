@@ -1,0 +1,48 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" novalidate>
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Join Us Today</legend>
+            {{ form|crispy }}
+        </fieldset>
+        <div id="tutor-form" class="form-group" style="display:none;">
+            <h4>Additional Tutor Information</h4>
+            {{ tutor_form.subject|as_crispy_field }}
+            {{ tutor_form.facebook_username|as_crispy_field }}
+            {{ tutor_form.contact_number|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Sign Up</button>
+        </div>
+    </form>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Already Have An Account?<a class="ml-2" href="{% url 'login' %}">Sign In</a>
+        </small>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const roleRadios = document.querySelectorAll('input[name="role"]');
+        const tutorForm = document.getElementById('tutor-form');
+
+        roleRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'tutor') {
+                    tutorForm.style.display = 'block';
+                    tuteeForm.style.display = 'none';
+                } else if (this.value === 'tutee') {
+                    tutorForm.style.display = 'none';
+                    tuteeForm.style.display = 'block';
+                }
+            });
+        });
+
+        document.querySelector('input[name="role"]:checked')?.dispatchEvent(new Event('change'));
+    });
+</script>
+{% endblock content %}
