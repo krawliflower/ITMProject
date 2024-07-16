@@ -1,48 +1,60 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
-{% block content %}
-<div class="content-section">
-    <form method="POST" novalidate>
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Join Us Today</legend>
-            {{ form|crispy }}
-        </fieldset>
-        <div id="tutor-form" class="form-group" style="display:none;">
-            <h4>Additional Tutor Information</h4>
-            {{ tutor_form.subject|as_crispy_field }}
-            {{ tutor_form.facebook_username|as_crispy_field }}
-            {{ tutor_form.contact_number|as_crispy_field }}
+{% block content %} 
+    <div class="content-section">
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Join Today</legend>
+                {{ form.first_name|as_crispy_field }}
+                {{ form.last_name|as_crispy_field }}
+                {{ form.email|as_crispy_field }}
+                {{ form.facebook_link|as_crispy_field }}
+                {{ form.username|as_crispy_field }}
+                {{ form.password1|as_crispy_field }}
+                {{ form.password2|as_crispy_field }}
+                {{ form.role|as_crispy_field }}
+                {{ form.subjects|as_crispy_field }}
+            </fieldset>
+            
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+            </div>
+        </form>
+        
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
+            </small>
         </div>
-        <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Sign Up</button>
-        </div>
-    </form>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            Already Have An Account?<a class="ml-2" href="{% url 'login' %}">Sign In</a>
-        </small>
     </div>
-</div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const roleRadios = document.querySelectorAll('input[name="role"]');
-        const tutorForm = document.getElementById('tutor-form');
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const roleRadios = document.querySelectorAll('input[name="role"]');
+            const subjectsField = document.getElementById('id_subjects');
 
-        roleRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'tutor') {
-                    tutorForm.style.display = 'block';
-                    tuteeForm.style.display = 'none';
-                } else if (this.value === 'tutee') {
-                    tutorForm.style.display = 'none';
-                    tuteeForm.style.display = 'block';
+            function updateSubjectHelpText(roleValue) {
+                if (roleValue === 'tutor') {
+                    subjectsField.setAttribute('data-help-text', 'Please select all subject expertise that apply.');
+                    document.getElementById('id_subjects_label').innerText = 'Subject Expertise';
+                } else if (roleValue === 'tutee') {
+                    subjectsField.setAttribute('data-help-text', 'Please select all subjects you need help in.');
+                    document.getElementById('id_subjects_label').innerText = 'Subject Needs';
                 }
-            });
-        });
+            }
 
-        document.querySelector('input[name="role"]:checked')?.dispatchEvent(new Event('change'));
-    });
-</script>
+            roleRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    updateSubjectHelpText(this.value);
+                });
+            });
+
+            // Initialize help text based on default checked value
+            const checkedRadio = document.querySelector('input[name="role"]:checked');
+            if (checkedRadio) {
+                updateSubjectHelpText(checkedRadio.value);
+            }
+        });
+    </script>
 {% endblock content %}

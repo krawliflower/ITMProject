@@ -1,35 +1,19 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, TutorForm, UserUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm
 
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
-        tutor_form = TutorForm(request.POST)
-        
-        if form.is_valid() and tutor_form.is_valid():
-            user = form.save()
-            role = form.cleaned_data.get('role')
-            
-            if role == 'tutor':
-                profile = profile.objects.create(user=user, role=role)
-                selected_subjects = tutor_form.cleaned_data.get('subject')
-                profile.subjects.set(selected_subjects)
-                profile.facebook_username = tutor_form.cleaned_data.get('facebook_username')
-                profile.contact_number = tutor_form.cleaned_data.get('contact_number')
-                profile.save()
-                
+        if form.is_valid():
+            form.save()
             messages.success(request, 'Your account has been created! You are now able to log in.')
             return redirect('login')
     else:
         form = UserRegisterForm()
-        tutor_form = TutorForm()
-    
-    return render(request, 'users/register.html', {
-        'form': form,
-        'tutor_form': tutor_form,
-    })
+
+    return render(request, 'users/register.html', {'form': form})
 
 @login_required
 def profile(request):
