@@ -53,7 +53,7 @@ class UserRegisterForm(UserCreationForm):
         ],
         widget = forms.CheckboxSelectMultiple,
         required = True,
-        help_text = "For tutors, enter your subject expertise. For tutees, enter subject needs."
+        help_text = "For tutors, enter your subject expertise. For tutees, enter subject needs. Select all that apply"
     )
 
     class Meta:
